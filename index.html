@@ -1,177 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Virtual Pet - Kitty</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
-</head>
-<body>
-  <!-- Ambient Animated Background Particles -->
-  <div class="bg-glow bg-glow-1"></div>
-  <div class="bg-glow bg-glow-2"></div>
-
-  <div id="game-container">
-    <!-- Header with title and sound toggle -->
-    <header id="header-area">
-      <div class="header-brand">
-        <span class="brand-icon">✨</span>
-        <h1 id="game-title">Virtual Pet</h1>
-      </div>
-      <button id="btn-sound" class="btn-sound" type="button" aria-label="Toggle Sound" title="Toggle Sound">🔊 Sound: ON</button>
-    </header>
-
-    <!-- Pet display area -->
-    <div id="pet-area">
-      <div id="pet-card">
-        <div id="pet-name-badge">
-          <span class="badge-dot"></span>
-          <h2 id="pet-name">KITTY</h2>
-        </div>
-
-        <!-- Floating action particles container -->
-        <div id="particle-container" aria-hidden="true"></div>
-
-        <!-- Pet character SVG -->
-        <svg id="pet-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Kitty the virtual pet">
-          <defs>
-            <!-- Radial Glow Gradient for Kitty's Body -->
-            <radialGradient id="petGradient" cx="40%" cy="30%" r="70%">
-              <stop offset="0%" stop-color="#FF72BE" />
-              <stop offset="60%" stop-color="#FF3399" />
-              <stop offset="100%" stop-color="#C71585" />
-            </radialGradient>
-            
-            <radialGradient id="cheekGradient" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#FF1493" stop-opacity="0.9" />
-              <stop offset="100%" stop-color="#FF69B4" stop-opacity="0" />
-            </radialGradient>
-
-            <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="6" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
-          </defs>
-
-          <!-- Ears -->
-          <ellipse cx="55" cy="68" rx="19" ry="24" class="pet-body-part"/>
-          <ellipse cx="145" cy="68" rx="19" ry="24" class="pet-body-part"/>
-
-          <!-- Body -->
-          <ellipse cx="100" cy="120" rx="72" ry="62" class="pet-body-part"/>
-
-          <!-- Soft Blush Cheeks -->
-          <circle cx="56" cy="128" r="12" fill="url(#cheekGradient)" class="pet-cheek"/>
-          <circle cx="144" cy="128" r="12" fill="url(#cheekGradient)" class="pet-cheek"/>
-
-          <!-- Eyes (Normal) -->
-          <g id="pet-left-eye">
-            <ellipse cx="76" cy="108" rx="14" ry="17" fill="#FFFFFF"/>
-            <circle id="pet-left-pupil" cx="76" cy="110" r="7.5" fill="#120A2A"/>
-            <circle cx="72" cy="104" r="3" fill="#FFFFFF"/> <!-- Eye Catchlight -->
-          </g>
-          <g id="pet-right-eye">
-            <ellipse cx="124" cy="108" rx="14" ry="17" fill="#FFFFFF"/>
-            <circle id="pet-right-pupil" cx="124" cy="110" r="7.5" fill="#120A2A"/>
-            <circle cx="120" cy="104" r="3" fill="#FFFFFF"/> <!-- Eye Catchlight -->
-          </g>
-
-          <!-- Sleeping eyes (closed arcs) -->
-          <g id="pet-sleeping-eyes" style="display: none;">
-            <path id="pet-left-sleep-eye" d="M 64 110 Q 76 96 88 110" stroke="#120A2A" stroke-width="4" fill="none" stroke-linecap="round"/>
-            <path id="pet-right-sleep-eye" d="M 112 110 Q 124 96 136 110" stroke="#120A2A" stroke-width="4" fill="none" stroke-linecap="round"/>
-          </g>
-
-          <!-- X eyes (game over) -->
-          <g id="pet-left-x" style="display: none;">
-            <line x1="66" y1="98" x2="86" y2="118" stroke="#120A2A" stroke-width="4" stroke-linecap="round"/>
-            <line x1="86" y1="98" x2="66" y2="118" stroke="#120A2A" stroke-width="4" stroke-linecap="round"/>
-          </g>
-          <g id="pet-right-x" style="display: none;">
-            <line x1="114" y1="98" x2="134" y2="118" stroke="#120A2A" stroke-width="4" stroke-linecap="round"/>
-            <line x1="134" y1="98" x2="114" y2="118" stroke="#120A2A" stroke-width="4" stroke-linecap="round"/>
-          </g>
-
-          <!-- Mouth -->
-          <path id="pet-mouth" d="M 85 135 Q 100 150 115 135" fill="none" stroke="#120A2A" stroke-width="3" stroke-linecap="round"/>
-        </svg>
-
-        <p id="mood-text">🙂 Your pet is doing okay.</p>
-        <p id="status-text"></p>
-      </div>
-    </div>
-
-    <!-- Stats display area -->
-    <div id="stats-area">
-      <div class="stat-card">
-        <div class="stat-header">
-          <span class="stat-label">🍗 HUNGER</span>
-          <span id="hunger-value" class="stat-value">50 / 100</span>
-        </div>
-        <div class="stat-bar-bg">
-          <div id="hunger-bar" class="stat-bar-fill hunger-fill"></div>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <span class="stat-label">😊 HAPPINESS</span>
-          <span id="happiness-value" class="stat-value">50 / 100</span>
-        </div>
-        <div class="stat-bar-bg">
-          <div id="happiness-bar" class="stat-bar-fill happiness-fill"></div>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <span class="stat-label">⚡ ENERGY</span>
-          <span id="energy-value" class="stat-value">50 / 100</span>
-        </div>
-        <div class="stat-bar-bg">
-          <div id="energy-bar" class="stat-bar-fill energy-fill"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Action buttons area -->
-    <div id="actions-area">
-      <button id="btn-feed" disabled>
-        <span class="btn-icon">🍗</span>
-        <span class="btn-label">Feed</span>
-      </button>
-      <button id="btn-play" disabled>
-        <span class="btn-icon">🎾</span>
-        <span class="btn-label">Play</span>
-      </button>
-      <button id="btn-sleep" disabled>
-        <span class="btn-icon">💤</span>
-        <span class="btn-label">Sleep</span>
-      </button>
-    </div>
-
-    <!-- Game control area -->
-    <div id="info-area">
-      <span id="timer" class="hidden" aria-hidden="true">00:00</span>
-      <button id="btn-start">
-        <span class="btn-glow"></span>
-        🚀 Start Game
-      </button>
-      <button id="btn-restart" class="hidden">
-        🔄 Restart
-      </button>
-      <button id="btn-reset-data" class="btn-secondary" title="Reset all saved progress">🧹 Reset Data</button>
-    </div>
-
-    <!-- Game Over overlay -->
-    <div id="game-over-overlay" class="hidden">
-      <div class="overlay-card">
-        <div id="game-over-icon">💀</div>
-        <h3 class="overlay-title">GAME OVER</h3>
-        <p id="game-over-message"></p>
-      </div>
-    </div>
-  </div>
-</body>
-</html>
+<!doctype html>
+<html lang="en" data-motion="on">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Home · The Idea Engine — Umaizah Azam</title><meta name="description" content="Umaizah Azam’s interactive machine-style portfolio: education, skills, projects, achievements and aspirations."><link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/css/styles.css"><script src="assets/js/config.js" defer></script><script src="assets/js/main.js" defer></script></head>
+<body data-page="home"><svg class="svg-defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="gear" viewBox="-100 -100 200 200"><path d="M77.34,-10.11 L95.73,-7.19 L95.73,7.19 L77.34,10.11 L75.32,20.26 L91.20,29.99 L85.69,43.28 L67.59,38.94 L61.84,47.54 L72.78,62.61 L62.61,72.78 L47.54,61.84 L38.94,67.59 L43.28,85.69 L29.99,91.20 L20.26,75.32 L10.11,77.34 L7.19,95.73 L-7.19,95.73 L-10.11,77.34 L-20.26,75.32 L-29.99,91.20 L-43.28,85.69 L-38.94,67.59 L-47.54,61.84 L-62.61,72.78 L-72.78,62.61 L-61.84,47.54 L-67.59,38.94 L-85.69,43.28 L-91.20,29.99 L-75.32,20.26 L-77.34,10.11 L-95.73,7.19 L-95.73,-7.19 L-77.34,-10.11 L-75.32,-20.26 L-91.20,-29.99 L-85.69,-43.28 L-67.59,-38.94 L-61.84,-47.54 L-72.78,-62.61 L-62.61,-72.78 L-47.54,-61.84 L-38.94,-67.59 L-43.28,-85.69 L-29.99,-91.20 L-20.26,-75.32 L-10.11,-77.34 L-7.19,-95.73 L7.19,-95.73 L10.11,-77.34 L20.26,-75.32 L29.99,-91.20 L43.28,-85.69 L38.94,-67.59 L47.54,-61.84 L62.61,-72.78 L72.78,-62.61 L61.84,-47.54 L67.59,-38.94 L85.69,-43.28 L91.20,-29.99 L75.32,-20.26 Z" fill="currentColor"/><circle r="61" fill="#111315"/><g stroke="currentColor" stroke-width="13"><path d="M0-58V58M-50-29L50 29M-50 29L50-29"/></g><circle r="25" fill="currentColor"/><circle r="10" fill="#111315"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+<symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5m0-5-9 9M19 14v5H5V5h5"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7Z"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+<symbol id="i-linkedin" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 10v7m0-10v.01M11 17v-7m0 3a3 3 0 0 1 6 0v4"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6Zm8 0v5h4M9 12h6m-6 4h6"/></symbol>
+</defs></svg><div class="boot-screen" id="boot-screen" hidden><div class="boot-box"><svg class="boot-gear" aria-hidden="true"><use href="#gear"></use></svg><p class="boot-title">THE IDEA ENGINE</p><div class="boot-track"><span class="boot-progress"></span></div><p class="boot-message" id="boot-message" role="status">Initializing creative systems…</p><button class="boot-skip" id="skip-boot" type="button">Skip sequence</button></div></div><div class="machine"><span class="screw tl"></span><span class="screw tr"></span><span class="screw bl"></span><span class="screw br"></span>
+<div class="faceplate"><div class="brandplate"><svg class="brand-mark" aria-hidden="true"><use href="#gear"></use></svg><div><div class="brand-name">THE IDEA ENGINE</div><span class="brand-sub">Umaizah Azam · personal operating system · UA-01</span></div></div><div class="machine-status"><span class="status-pod"><span class="light"></span>System online</span><span class="status-pod"><span class="light copper"></span>Static / local</span><button class="motion-toggle" id="motion-toggle" type="button" aria-pressed="true"><span id="motion-label">Motion: on</span></button></div></div>
+<main class="viewport" id="main" tabindex="-1">
+<div class="hero-grid"><div class="hero-copy"><p class="screen-kicker">Creative system · operator online</p><h1>Curiosity in.<br><span class="accent">Possibility out.</span></h1><p class="lede">I’m Umaizah Azam — an A-Level student in Karachi exploring Computer Science, Mathematics and Physics. This is my mind wired as a machine: learning goes in, ideas get processed, and useful things come out.</p><div class="hero-actions"><button class="btn btn-primary" id="run-cycle" type="button">Run the idea cycle<svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg></button><a class="btn" href="about.html">Identify the operator<svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></a></div></div>
+<div class="engine-stage"><span class="serial-tag">MECHANISM UA-01 / REV. 08</span><svg class="engine-assembly" viewBox="0 0 520 440" role="img" aria-label="A copper and gunmetal gear assembly representing the idea engine">
+<defs><linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3A423E"/><stop offset="1" stop-color="#202624"/></linearGradient></defs>
+<g fill="none" stroke="#3C4541" stroke-width="2"><path d="M40 90h100m240 0h100M40 350h110m220 0h110"/><path d="M70 70v300M450 70v300" stroke-dasharray="4 8"/></g>
+<g fill="#252B2B" stroke="#56605A"><circle cx="70" cy="70" r="7"/><circle cx="450" cy="70" r="7"/><circle cx="70" cy="370" r="7"/><circle cx="450" cy="370" r="7"/></g>
+<g transform="translate(382 112)"><g class="rotor reverse" style="color:#465049"><use href="#gear" x="-82" y="-82" width="164" height="164"/></g></g>
+<g transform="translate(116 330)"><g class="rotor fast" style="color:#38413C"><use href="#gear" x="-66" y="-66" width="132" height="132"/></g></g>
+<g transform="translate(258 224)"><g class="rotor" style="color:#D4773F"><use href="#gear" x="-150" y="-150" width="300" height="300"/></g><circle r="43" fill="#111315" stroke="#C7E36B" stroke-width="2"/><circle r="15" fill="#C7E36B"/><circle r="5" fill="#111315"/></g>
+<g class="piston"><rect x="365" y="270" width="26" height="72" rx="5" fill="url(#metal)" stroke="#56605A"/><rect x="371" y="278" width="14" height="30" rx="3" fill="#C7E36B" opacity=".8"/></g>
+<g fill="#ADB1A7" font-family="monospace" font-size="10" letter-spacing="2"><text x="84" y="54">INPUT</text><text x="366" y="54">PROCESS</text><text x="350" y="394">OUTPUT</text></g>
+</svg><div class="cycle-readout"><span class="cycle-step active" data-cycle="0">01 / INPUT</span><span class="cycle-step" data-cycle="1">02 / PROCESS</span><span class="cycle-step" data-cycle="2">03 / OUTPUT</span></div><p class="cycle-status" id="cycle-status" role="status">Ready. Press “Run the idea cycle”.</p></div></div>
+<div class="evidence-strip"><div class="evidence-item"><strong>03</strong><span>Documented projects</span></div><div class="evidence-item"><strong>09</strong><span>Learning records</span></div><div class="evidence-item"><strong>03</strong><span>A-Level subjects</span></div><div class="evidence-item"><strong>01</strong><span>Merit scholarship</span></div></div>
+<section class="concept-note"><h2>Why this machine?</h2><p>The Idea Engine turns my portfolio into an interactive machine, with each physical control opening a different part of my story. Instead of a conventional menu, visitors operate switches, scanners and terminals to move between separate pages. It is unconventional because the interface makes exploration feel like bringing a creative system to life.</p></section>
+</main><section class="control-deck" id="control-deck" aria-label="Physical machine controls"><div class="deck-label"><span>Control surface · operate a component to change pages</span><a class="hw-port homework-link" href="https://umaizah10.github.io/Heuser/" target="_blank" rel="noopener noreferrer"><span class="port-hole"></span>Homework 7 <span data-hw-status>CONNECTED</span><svg class="icon" aria-hidden="true"><use href="#i-external"></use></svg></a></div><div class="deck-grid"><a class="machine-component c-power" href="index.html" aria-current="page" aria-label="Operate Main power switch — Home"><span class="component-top"><span class="component-code">PWR-01</span><span class="light"></span></span><span class="hardware"><span class="switch-track"><span class="switch-lever"></span></span></span><span><span class="component-name">Main power switch</span><span class="component-action">Home</span></span></a><a class="machine-component c-identity" href="about.html" aria-label="Operate Identity scanner — About me"><span class="component-top"><span class="component-code">ID-02</span><span class="light"></span></span><span class="hardware"><span class="scanner-thumb"><img src="assets/images/umaizah-azam.jpg" alt="" loading="lazy" width="48" height="44"></span></span><span><span class="component-name">Identity scanner</span><span class="component-action">About me</span></span></a><a class="machine-component c-processor" href="skills.html" aria-label="Operate Processing unit — Technical skills"><span class="component-top"><span class="component-code">CPU-03</span><span class="light"></span></span><span class="hardware"><span class="cpu-chip"><span class="cpu-core"></span></span></span><span><span class="component-name">Processing unit</span><span class="component-action">Technical skills</span></span></a><a class="machine-component c-output" href="projects.html" aria-label="Operate Output chamber — Projects"><span class="component-top"><span class="component-code">OUT-04</span><span class="light"></span></span><span class="hardware"><span class="output-door"><span class="output-slot"></span></span></span><span><span class="component-name">Output chamber</span><span class="component-action">Projects</span></span></a><a class="machine-component c-meter" href="achievements.html" aria-label="Operate Performance meter — Achievements"><span class="component-top"><span class="component-code">PER-05</span><span class="light"></span></span><span class="hardware"><span class="meter-arc"><span class="meter-needle"></span></span></span><span><span class="component-name">Performance meter</span><span class="component-action">Achievements</span></span></a><a class="machine-component c-blueprint" href="aspirations.html" aria-label="Operate Blueprint station — Aspirations"><span class="component-top"><span class="component-code">BLU-06</span><span class="light"></span></span><span class="hardware"><span class="blueprint-mini"></span></span><span><span class="component-name">Blueprint station</span><span class="component-action">Aspirations</span></span></a><a class="machine-component c-terminal" href="contact.html" aria-label="Operate Communication terminal — Contact"><span class="component-top"><span class="component-code">COM-07</span><span class="light"></span></span><span class="hardware"><span class="terminal-mini">&gt;_<span class="cursor"></span></span></span><span><span class="component-name">Communication terminal</span><span class="component-action">Contact</span></span></a><a class="machine-component c-archive" href="education.html" aria-label="Operate Learning archive — Education"><span class="component-top"><span class="component-code">EDU-08</span><span class="light"></span></span><span class="hardware"><span class="archive-mini"></span></span><span><span class="component-name">Learning archive</span><span class="component-action">Education</span></span></a></div></section></div></body></html>
